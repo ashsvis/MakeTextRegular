@@ -22,7 +22,7 @@ namespace MakeTextRegular
 
             // первый аргумент (0) указывает, что мы задаем тип объекта
             // второй аргумент ("MTEXT") - собственно тип
-            filterlist[0] = new TypedValue(0, "MTEXT,TEXT");
+            filterlist[0] = new TypedValue(0, "MTEXT,TEXT,ACAD_TABLE");
 
             // создаем фильтр
             SelectionFilter filter = new(filterlist);
@@ -67,31 +67,7 @@ namespace MakeTextRegular
                     // устанавливаем наклон
                     txt.Oblique = oblique;
                 }
-            }
-            tr.Commit();
-
-            // ищем таблицы
-            // пытаемся получить ссылки на все объекты
-            // ВНИМАНИЕ! Нужно проверить работоспособность метода с замороженными и заблокированными слоями!
-            selRes = ed.SelectAll();
-            // если произошла ошибка - сообщаем о ней
-            if (selRes.Status != PromptStatus.OK)
-            {
-                ed.WriteMessage("\nОшибка!\n");
-                return;
-            }
-            // получаем массив ID объектов
-            ids = selRes.Value.GetObjectIds();
-
-            // начинаем транзакцию
-            using Transaction ttr = db.TransactionManager.StartTransaction();
-            // "пробегаем" по всем полученным объектам
-            foreach (ObjectId id in ids)
-            {
-                // приводим каждый из них к типу Entity
-                //Entity entity = (Entity)ttr.GetObject(id, OpenMode.ForRead);
-                // приводим каждый из них к типу Table
-                if (ttr.GetObject(id, OpenMode.ForRead) is Table tbl)
+                else if (tr.GetObject(id, OpenMode.ForRead) is Table tbl)
                 {
                     string[,] arr = new string[tbl.Rows.Count, tbl.Columns.Count];
                     for (var i = 0; i < tbl.Rows.Count; i++)
@@ -144,8 +120,7 @@ namespace MakeTextRegular
                     }
                 }
             }
-            ttr.Commit();
+            tr.Commit();
         }
-
     }
 }
