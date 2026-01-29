@@ -50,11 +50,11 @@ namespace MakeTextRegular
                 if (tr.GetObject(id, OpenMode.ForRead) is MText mtxt)
                 {
                     // получаем значение текста
-                    var text = mtxt.Text;
+                    var text = mtxt.Text.Replace("\r\n", "\\P").Replace("\r", "\\P");
                     // открываем объект на запись
                     mtxt.UpgradeOpen();
                     // устанавливаем текст
-                    mtxt.Contents = @"{\Q0;" + text + @"}";
+                    mtxt.Contents = @"{\Q0;" + text.Replace("\r\n", "\\P") + @"}";
                 }
                 // приводим каждый из них к типу DBText
                 else if (tr.GetObject(id, OpenMode.ForRead) is DBText txt)
@@ -100,7 +100,7 @@ namespace MakeTextRegular
                     {
                         for (var j = 0; j < arr.GetLength(1); j++)
                         {
-                            var text = arr[i, j];
+                            var text = arr[i, j].Replace("\r\n", "\\P").Replace("\r", "\\P");
                             arr[i, j] = @"{\Q0;" + text + @"}";
                         }
                     }
