@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Rivilis
 {
-    public class Contour
+    public class Contour : IExtensionApplication
     {
         [CommandMethod("MakePline")]
         public void MakePline()
@@ -122,6 +122,16 @@ namespace Rivilis
         static Point2d ToPoint2d(Point3d p)
         {
             return new Point2d(p.X, p.Y);
+        }
+
+        public void Initialize()
+        {
+            //throw new NotImplementedException();
+        }
+
+        public void Terminate()
+        {
+            //throw new NotImplementedException();
         }
     }
 }

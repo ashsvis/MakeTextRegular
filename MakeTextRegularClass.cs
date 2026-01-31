@@ -5,12 +5,19 @@ using Autodesk.AutoCAD.Runtime;
 using Acad = Autodesk.AutoCAD.ApplicationServices.Application;
 using Exception = Autodesk.AutoCAD.Runtime.Exception;
 
+[assembly: CommandClass(typeof(MakeTextRegular.MakeTextRegularClass))]
+
 namespace MakeTextRegular
 {
-    public class MakeTextRegularClass
+    public class MakeTextRegularClass : IExtensionApplication
     {
+        public void Initialize()
+        {
+            //throw new NotImplementedException();
+        }
+
         [CommandMethod("MAKETEXTREGULAR")]
-        public static void MakeTextRegular()
+        public void MakeTextRegular()
         {
             // получаем БД и Editor текущего документа
             Document doc = Acad.DocumentManager.MdiActiveDocument;
@@ -121,6 +128,11 @@ namespace MakeTextRegular
                 }
             }
             tr.Commit();
+        }
+
+        public void Terminate()
+        {
+            //throw new NotImplementedException();
         }
     }
 }
