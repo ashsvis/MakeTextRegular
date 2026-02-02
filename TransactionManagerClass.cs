@@ -38,10 +38,33 @@ namespace TestTransactionManager
                     // Step through the Block table record
                     foreach (ObjectId asObjId in acBlkTblRec)
                     {
-                        acDoc.Editor.WriteMessage("\nDXF name: " + asObjId.ObjectClass.DxfName);
-                        acDoc.Editor.WriteMessage("\nObjectID: " + asObjId.ToString());
-                        acDoc.Editor.WriteMessage("\nHandle: " + asObjId.Handle.ToString());
-                        acDoc.Editor.WriteMessage("\n");
+                        if (acTrans.GetObject(asObjId, OpenMode.ForRead) is Table tbl)
+                        {
+                            var tableName = tbl.Name;
+                            var tableColumnsCount = tbl.Columns.Count;
+                            var tableRowsCount = tbl.Rows.Count;
+                            acDoc.Editor.WriteMessage("\nDXF name: " + asObjId.ObjectClass.DxfName);
+                            acDoc.Editor.WriteMessage("\nObjectID: " + asObjId.ToString());
+                            acDoc.Editor.WriteMessage("\nHandle: " + asObjId.Handle.ToString());
+                            acDoc.Editor.WriteMessage("\nTableName: " + tbl.Name.ToString());
+                            acDoc.Editor.WriteMessage("\nColumnsCount: " + tbl.Columns.Count.ToString());
+                            var colWidths = "";
+                            for (var j = 0; j < tbl.Columns.Count; j++)
+                            {
+                                colWidths += "[" + tbl.Columns[j].Width + "][" + tbl.Columns[j].Alignment + "]";
+                            }
+                            acDoc.Editor.WriteMessage("\nColumnWidthst: " + colWidths);
+                            acDoc.Editor.WriteMessage("\nRowsCount: " + tbl.Rows.Count.ToString());
+                            for (var i = 0; i < tbl.Rows.Count; i++)
+                            {
+                                for (var j = 0; j < tbl.Columns.Count; j++)
+                                {
+                                   var cell = tbl.Cells[i, j];
+                                    acDoc.Editor.WriteMessage($"\nCells[{i}, {j}]: [{cell.Alignment}][{cell.TextHeight}]{cell.TextString}");
+                                }
+                            }
+                            acDoc.Editor.WriteMessage("\n");
+                        }
                     }
                     acTrans.Commit();
                 }
